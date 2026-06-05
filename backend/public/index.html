@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Literature</title>
+</head>
+
+<body>
+
+<h2>Literature</h2>
+
+<!-- Initial choice — shown first -->
+<div id="lobbyOptions">
+    <button id="createRoomButton">🏠 Start a Room</button>
+    <button id="joinRoomButton">🔑 Join a Room</button>
+</div>
+
+<!-- Start room form — hidden initially -->
+<div id="createRoomForm" style="display:none;">
+    <input id="createNameInput" placeholder="Enter your user-name">
+    
+    <div style="margin-top:8px;">
+        <label><strong>Game Format:</strong></label><br>
+        <label><input type="radio" name="gameFormat" value="4" > 4 Players (2 per team)</label><br>
+        <label><input type="radio" name="gameFormat" value="6" checked> 6 Players (3 per team)</label><br>
+        <label><input type="radio" name="gameFormat" value="8"> 8 Players (4 per team)</label>
+    </div>
+
+    <button id="confirmCreateButton" style="margin-top:8px;">Start Room</button>
+    <button id="backFromCreateButton">← Back</button>
+</div>
+
+<!-- Join room form — hidden initially -->
+<div id="joinForm" style="display:none;">
+    <input id="joinNameInput" placeholder="Enter your user-name">
+    <input id="roomInput" placeholder="Enter room code">
+    <button id="confirmJoinButton">Join Room</button>
+    <button id="backFromJoinButton">← Back</button>
+</div>
+
+<!-- Room code display — shown after creating -->
+<div id="roomCodeDisplay" style="display:none;">
+    <p>Your room code:</p>
+    <h2 id="roomCodeText" style="letter-spacing:4px; font-size:32px;"></h2>
+    <p style="color:gray; font-size:13px;">Share this with friends</p>
+</div>
+
+<button id="disconnectButton" style="display:none;">Leave Room</button>
+
+<ul id="messages"></ul>
+
+<div style="display:flex; gap:16px; margin-top:16px;">
+
+    <!-- Left — game state -->
+    <div style="flex:1;">
+        <h4>📊 Game State</h4>
+        <div id="gameState" style="
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 12px;
+            font-size: 13px;
+        "></div>
+    </div>
+
+    <!-- Right — last action -->
+    <div style="flex:1;">
+        <h4>🃏 Last Action</h4>
+        <div id="lastAction" style="border: 1px solid #ccc; font-size: 13px;">
+            <div id="currentTurnBanner" style="
+                background: #e3f2fd;
+                padding: 8px 12px;
+                border-bottom: 1px solid #ccc;
+                font-weight: bold;
+                text-align: center;
+                color: #1565c0;
+            ">⏳ Waiting for game to start...</div>
+            <div id="lastActionMessage" style="
+                padding: 12px;
+                min-height: 160px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: #555;
+            ">No action yet</div>
+        </div>
+    </div>
+
+</div>
+
+<div id="roomsList"></div>
+
+<div id="playersContainer" style="display:none;">
+    <h3>Current players in this room:</h3>
+    <ul id="playersList" style="list-style:none; padding:0;"></ul>
+
+    <div style="display:flex; gap:16px; margin-top:8px;">
+        <div style="flex:1; border:1px solid #90caf9; border-radius:6px; padding:12px; background:#e3f2fd;">
+            <h4 id="teamAHeader" style="margin:0 0 8px 0; color:#1565c0;">Team A</h4>
+            <ul id="teamAList" style="list-style:none; padding:0; margin:0;"></ul>
+        </div>
+        <div style="flex:1; border:1px solid #f48fb1; border-radius:6px; padding:12px; background:#fce4ec;">
+            <h4 id="teamBHeader" style="margin:0 0 8px 0; color:#c62828;">Team B</h4>
+            <ul id="teamBList" style="list-style:none; padding:0; margin:0;"></ul>
+        </div>
+    </div>
+
+    <div id="teamPickerContainer" style="margin-top:12px;"></div>
+    <button id="startGameButton" style="display:none;">Start Game</button>
+    <button id="exitGameButton" style="display:none;" disabled>Exit Game</button>
+</div>
+
+<div id="teamsContainer"></div>
+<div id="handContainer"></div>
+
+<script type="module" src="/socket.io/socket.io.js"></script>
+<script type="module" src="gameconnection.js"></script>
+
+</body>
+</html>

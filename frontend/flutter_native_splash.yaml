@@ -1,0 +1,14 @@
+flutter_native_splash:
+  # The exact hex color from your PreGameScreens
+  color: "#0C1A10" 
+  
+  # Your static image
+  image: "assets/splash_logo.png" 
+  
+  # Ensure the image isn't distorted on different screen sizes
+  # fill: false 
+
+  # Android 12+ uses a new Splash Screen API, so we configure it specifically
+  android_12:
+    color: "#0C1A10"
+    image: "assets/splash_logo.png"

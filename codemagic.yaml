@@ -1,0 +1,78 @@
+workflows:
+  flutter-ios-release:
+    name: Flutter iOS Release to App Store
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: Codemagic
+    working_directory: frontend
+    environment:
+      groups:
+        - app_store_credentials
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.nysioapps.literature
+      vars:
+        BUNDLE_ID: "com.nysioapps.literature"
+        APP_STORE_APPLE_ID: "6761733606"
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up keychain
+        script: |
+          keychain initialize
+      - name: Add certificates to keychain
+        script: |
+          keychain add-certificates
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Create export options plist
+        script: |
+          cat > /Users/builder/export_options.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>8MD7SZ7UVX</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.nysioapps.literature</key>
+              <string>Apple Distribution profile provision</string>
+            </dict>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
+      - name: Build Flutter iOS ipa
+        script: |
+          flutter config --no-enable-swift-package-manager
+          flutter build ipa --release \
+            --dart-define=SERVER_URL=https://literatureserver-production.up.railway.app/ \
+            --no-tree-shake-icons \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
